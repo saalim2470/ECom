@@ -3,5 +3,6 @@ const router=express.Router()
 const categoryController=require('../controllers/category-controller')
 
 router.route('/create').post(categoryController.create)
+router.route('/getAll').get(categoryController.getAll)
 
 module.exports=router

@@ -4,7 +4,6 @@ const authRouter = require('./router/auth-route')
 const categoryRouter = require('./router/category-router')
 const app = express()
 const connectDb = require('./utils/db')
-const { version } = require('mongoose')
 const errorMiddlewear = require('./middleware/error-middleware')
 const authorizeMiddleware=require('./middleware/authorize-middleware')
 const port = 3000

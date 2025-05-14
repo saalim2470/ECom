@@ -12,10 +12,6 @@ const validate_middleware = require('../middleware/validate-middleware')
 //     res.send('Hello now you are login')
 // })
 
-router.route('/user').get((req, res) => {
-    res.send('Hello user page')
-})
-
 // controller method
 router.route('/').get(authController.home)
 

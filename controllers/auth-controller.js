@@ -41,6 +41,7 @@ const register = async (req, res,next) => {
 const login = async (req, res) => {
     try {
         const { email, password } = req.body
+        
         const isUser = await userModel.findOne({ email })
 
         if (!isUser) {
@@ -67,6 +68,8 @@ const login = async (req, res) => {
         }
 
     } catch (error) {
+        console.log('=-=error-=-=-',error);
+        
         res.status(500).json({ msg: 'Internal server error' })
 
     }
