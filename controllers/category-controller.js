@@ -23,4 +23,14 @@ const getAll = async (req, res, next) => {
         next(error)
     }
 }
-module.exports = { create, getAll }
+
+const get = async (req, res, next) => {
+    try {
+        const id = req.params.id.toString()
+        const categoryData = await categoryModel.findById(id)
+        res.status(200).json({ data: categoryData })
+    } catch (error) {
+        next(error)
+    }
+}
+module.exports = { create, getAll, get }
