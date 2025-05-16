@@ -20,6 +20,55 @@ const create = async (req, res, next) => {
     }
 }
 
+const update = async (req, res, next) => {
+    try {
+        const categoryId = req.params.id
+        //check id is entered or not
+        if (!categoryId || !mongoose.Types.ObjectId.isValid(categoryId)) {
+            const error = {
+                status: 400,
+                title: 'Bad Request',
+                message: "Invalid or missing category ID"
+            }
+            next(error)
+        }
+        //loggedIn user id
+        const userId = req.userId
+        const { name, description, isActive } = req.body
+
+        // Create update object
+        let updateFields = {
+            name,
+            description,
+            isActive,
+            updatedBy: userId,
+        };
+        if (req.file || req.file != undefined || req.file != null) {
+            updateFields.image = req.file.path
+        }
+        const updatedCategory = await categoryModel.findByIdAndUpdate(
+            categoryId,
+            { $set: updateFields },
+            { new: true }
+        );
+        if (!updatedCategory) {
+            return next({
+                status: 404,
+                title: 'Not Found',
+                message: 'Category not found',
+            });
+        }
+        res.status(200).json({
+            data: updatedCategory,
+            success: true,
+            msg: 'Category updated successfully'
+        })
+
+    } catch (error) {
+        next(error)
+    }
+}
+
 const getAll = async (req, res, next) => {
     try {
         const page = parseInt(req.query.page) || 1; // Default page 1
@@ -90,4 +139,4 @@ const deleteCategory = async (req, res, next) => {
         next(error)
     }
 }
-module.exports = { create, getAll, get, deleteCategory }
+module.exports = { create, getAll, get, deleteCategory,update }
