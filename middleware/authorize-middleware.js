@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken')
 
-const authorizeMiddleware = (req, res, next) => {
+const authorizeMiddleware = (role) => (req, res, next) => {
     try {
         const token = req.headers.authorization;
-        if (token || token.startsWith('Bearer ')) {
+        if (token && token.startsWith('Bearer ')) {
             const originalToken = token.split(' ')[1]
             jwt.verify(originalToken, process.env.JWT_SECERT_KEY, (err, decoded) => {
                 if (err) {
@@ -14,7 +14,15 @@ const authorizeMiddleware = (req, res, next) => {
                     }
                     next(error)
                 } else {
-                    req.userId=decoded.userId
+                    if (role && decoded.role != role) {
+                        const error = {
+                            status: 401,
+                            title: 'UnAuthorize',
+                            message: 'Only admin can access'
+                        }
+                        next(error)
+                    }
+                    req.userId = decoded.userId
                     next()
                 }
             });
