@@ -22,8 +22,18 @@ const create = async (req, res, next) => {
 
 const getAll = async (req, res, next) => {
     try {
-        const categoryData = await categoryModel.find()
-        res.status(200).json({ data: categoryData })
+        const page = parseInt(req.query.page) || 1; // Default page 1
+        const limit = parseInt(req.query.limit) || 10; // Default 10 items per page
+        const skip = (page - 1) * limit;
+
+        const total = await categoryModel.countDocuments();
+        const categoryData = await categoryModel.find().skip(skip).limit(limit)
+        res.status(200).json({
+            data: categoryData,
+            currentPage: page,
+            totalPages: Math.ceil(total / limit),
+            totalItems: total
+        })
     } catch (error) {
         next(error)
     }
@@ -31,7 +41,16 @@ const getAll = async (req, res, next) => {
 
 const get = async (req, res, next) => {
     try {
-        const id = req.params.id.toString()
+        const id = req.params.id
+        //check id is entered or not
+        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+            const error = {
+                status: 400,
+                title: 'Bad Request',
+                message: "Invalid or missing category ID"
+            }
+            next(error)
+        }
         const categoryData = await categoryModel.findById(id)
         res.status(200).json({ data: categoryData })
     } catch (error) {
