@@ -9,12 +9,11 @@ const authorizeMiddleware = (req, res, next) => {
                 if (err) {
                     const error = {
                         status: 401,
-                        title: 'Please login again',
-                        message: err.message
+                        title: 'UnAuthorize',
+                        message: 'Please login again to access'
                     }
                     next(error)
                 } else {
-                    console.log('JWT is valid. Decoded payload:', decoded);
                     req.userId=decoded.userId
                     next()
                 }
