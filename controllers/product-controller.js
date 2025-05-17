@@ -1,4 +1,5 @@
 const productModel = require('../models/product-model')
+const mongoose = require('mongoose')
 
 const create = async (req, res, next) => {
     try {
@@ -64,4 +65,24 @@ const getAll = async (req, res, next) => {
     }
 }
 
-module.exports = { create, getAll }
+const get = async (req, res, next) => {
+    try {
+        const productId = req.params.id
+        //check id is entered or not
+        if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+            const error = {
+                status: 400,
+                title: 'Bad Request',
+                message: "Invalid or missing product ID"
+            }
+            next(error)
+        }
+        const productData = await productModel.findById(productId)
+        res.status(200).json({ data: productData, success: true })
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+module.exports = { create, getAll, get }

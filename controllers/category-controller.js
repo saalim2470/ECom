@@ -102,7 +102,7 @@ const get = async (req, res, next) => {
             next(error)
         }
         const categoryData = await categoryModel.findById(id)
-        res.status(200).json({ data: categoryData })
+        res.status(200).json({ data: categoryData, success: true })
     } catch (error) {
         next(error)
     }
@@ -140,4 +140,4 @@ const deleteCategory = async (req, res, next) => {
         next(error)
     }
 }
-module.exports = { create, getAll, get, deleteCategory,update }
+module.exports = { create, getAll, get, deleteCategory, update }
