@@ -1,4 +1,3 @@
-const { json } = require('express');
 const productModel = require('../models/product-model')
 
 const create = async (req, res, next) => {
@@ -45,4 +44,24 @@ const create = async (req, res, next) => {
     }
 }
 
-module.exports = { create }
+const getAll = async (req, res, next) => {
+    try {
+        const page = parseInt(req.query.page) || 1; // Default page 1
+        const limit = parseInt(req.query.limit) || 10; // Default 10 items per page
+        const skip = (page - 1) * limit;
+
+        const total = await productModel.countDocuments();
+        const productsData = await productModel.find({}, 'name description price discountPrice').skip(skip).limit(limit)
+        res.status(200).json({
+            data: productsData,
+            currentPage: page,
+            totalPages: Math.ceil(total / limit),
+            totalItems: total,
+            success: true,
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+module.exports = { create, getAll }

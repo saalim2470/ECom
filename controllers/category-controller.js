@@ -81,7 +81,8 @@ const getAll = async (req, res, next) => {
             data: categoryData,
             currentPage: page,
             totalPages: Math.ceil(total / limit),
-            totalItems: total
+            totalItems: total,
+            success: true,
         })
     } catch (error) {
         next(error)
