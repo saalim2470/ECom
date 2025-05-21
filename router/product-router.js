@@ -12,7 +12,9 @@ var upload = multer({ storage: storage })
 router.route('/create').post(authorizeMiddleware('Admin'), upload.array('images', 5), productController.create)
 //@route - /api/product/getAll
 router.route('/getAll').get(productController.getAll)
-//@route - /api/product/{id}
-router.route('/:id').get(productController.get)
+//@route - /api/product/getDetail/{id}
+router.route('/getDetail/:id').get(productController.get)
+//@route - /api/product/getProductByCategory/{categoryId}
+router.route('/getProductByCategory/:categoryId').get(productController.getProductByCategory)
 
 module.exports = router
