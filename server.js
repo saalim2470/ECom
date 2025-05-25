@@ -7,11 +7,17 @@ const app = express()
 const connectDb = require('./utils/db')
 const errorMiddlewear = require('./middleware/error-middleware')
 const authorizeMiddleware = require('./middleware/authorize-middleware')
+var cors = require('cors')
 const port = 3000 || 4000
 
-
+var corsOptions = {
+    origin: 'http://localhost:5173',
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credential:true
+}
 
 //middlewears
+app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
@@ -20,7 +26,7 @@ app.use(express.urlencoded({ extended: false }))
 app.use('/api/auth', authRouter)
 app.use('/api/category', authorizeMiddleware(), categoryRouter)
 // app.use('/api/category',authorizeMiddleware('admin'), categoryRouter)
-app.use('/api/product',authorizeMiddleware(), productRouter)
+app.use('/api/product', authorizeMiddleware(), productRouter)
 app.use('/uploads', express.static('uploads'))
 
 app.get('/', (req, res) => {
