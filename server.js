@@ -11,7 +11,7 @@ var cors = require('cors')
 const port = 3000 || 4000
 
 var corsOptions = {
-    origin: 'http://localhost:5173',
+    origin: 'https://ecomadmin-ag7s.onrender.com',
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credential:true
 }
