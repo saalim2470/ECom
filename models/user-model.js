@@ -53,7 +53,7 @@ userSchema.methods.genrateToken = async function () {
             email: this.email,
             role:this.role
         }, process.env.JWT_SECERT_KEY, {
-            expiresIn: '60s'
+            expiresIn: '7d'
         })
     } catch (error) {
         console.error(error)
