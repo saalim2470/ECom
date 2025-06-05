@@ -16,5 +16,7 @@ router.route('/getAll').get(productController.getAll)
 router.route('/getDetail/:id').get(productController.get)
 //@route - /api/product/getProductByCategory/{categoryId}
 router.route('/getProductByCategory/:categoryId').get(productController.getProductByCategory)
+//@route - /api/product/{id}
+router.route('/:id').delete(productController.deleteProduct)
 
 module.exports = router

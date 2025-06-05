@@ -1,3 +1,4 @@
+const { uploadFile } = require('../functions/upload');
 const productModel = require('../models/product-model')
 const mongoose = require('mongoose')
 
@@ -35,7 +36,11 @@ const create = async (req, res, next) => {
         } = req.body
         const userId = req.userId
 
-        const imagePath = req.files.map((file) => file.path)
+        const imageUploadPromises = req.files.map((file) => uploadFile(file.path));
+        const imageUploadResults = await Promise.all(imageUploadPromises);
+        const imageUrls = imageUploadResults.map(result => result.secure_url);
+
+        // const imagePath = req.files.map((file) => file.path)
         if (price) {
             req.body.price = parseInt(price)
         }
@@ -43,10 +48,11 @@ const create = async (req, res, next) => {
             req.body.discountPrice = parseInt(discountPrice)
         }
         if (variants) {
-            const varientsJson = variants.map((data) => JSON.parse(data))
+            const varientsJson = JSON.parse(variants)
+            //  varientsJson.map((data) => JSON.parse(data))
             req.body.variants = varientsJson
         }
-        req.body.images = imagePath
+        req.body.images = imageUrls
         const neweProduct = await productModel.create({ ...req.body, createdBy: userId, updatedBy: userId })
         res.status(201).json({
             data: neweProduct,
@@ -118,4 +124,30 @@ const getProductByCategory = async (req, res, next) => {
     }
 }
 
-module.exports = { create, getAll, get, getProductByCategory }
+const deleteProduct = async (req, res, next) => {
+    try {
+        const id = req.params.id
+        //check id is entered or not
+        checkEnteredId(id)
+        //delete category
+        const deletedProduct = await productModel.findByIdAndDelete(id)
+        //if deletedC variable is contain category then is deleted if not contain then not found
+        if (!deletedProduct) {
+            const error = {
+                status: 404,
+                title: 'Not Found',
+                message: "Product not found"
+            }
+            next(error)
+        }
+        res.status(200).json({
+            data: deletedProduct,
+            success: true,
+            msg: 'Product deleted successfully'
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+module.exports = { create, getAll, get, getProductByCategory,deleteProduct }

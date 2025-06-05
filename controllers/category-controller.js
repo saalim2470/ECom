@@ -1,3 +1,4 @@
+const { uploadFile } = require('../functions/upload');
 const categoryModel = require('../models/category-model')
 const mongoose = require('mongoose')
 
@@ -5,7 +6,8 @@ const create = async (req, res, next) => {
     try {
         const userId = req.userId
         if (req.file || req.file != undefined || req.file != null) {
-            req.body.image = req.file.path
+            const imageUploadUrl = await uploadFile(req.file.path);
+            req.body.image = imageUploadUrl.secure_url
         }
 
         const newcategory = await categoryModel.create({ ...req.body, createdBy: userId, updatedBy: userId })
@@ -44,7 +46,8 @@ const update = async (req, res, next) => {
             updatedBy: userId,
         };
         if (req.file || req.file != undefined || req.file != null) {
-            updateFields.image = req.file.path
+            const imageUploadUrl = await uploadFile(req.file.path);
+            req.body.image = imageUploadUrl.secure_url
         }
         const updatedCategory = await categoryModel.findByIdAndUpdate(
             categoryId,
